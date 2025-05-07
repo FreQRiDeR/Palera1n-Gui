@@ -9,6 +9,7 @@ PALERA1N GUI WRITTEN IN PYTHON
 * Install palera1n in $PATH for it to work.
 * Rename to "palera1n" if not already.
 * Get it here! https://github.com/palera1n/palera1n
+* Run in Python or use Standalone Binary.
 * By FreQRiDeR and ChatGPT. (Mostly ChatGPT! LOL)
 
 
