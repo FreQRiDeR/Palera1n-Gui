@@ -5,9 +5,9 @@
 
 PALERA1N GUI WRITTEN IN PYTHON
 
-* For macOS only. (For now)
+* For macOS x86_64 (iNteL) only. (For now)
 * This runs various palera1n commands when buttons are clicked. 
-* Get it here! https://github.com/palera1n/palera1n
+* Get palera1n here: https://github.com/palera1n/palera1n
 * Install palera1n in $PATH for it to work. (Eg. /usr/local/bin)
 * Rename to "palera1n" if not already.
 * Run in Python or use Standalone Binary.
