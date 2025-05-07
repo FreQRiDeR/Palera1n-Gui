@@ -9,3 +9,8 @@ PALERA1N GUI WRITTEN IN PYTHON
 * Install palera1n in $PATH for it to work.
 * Rename to "palera1n" if not already.
 * By FreQRiDeR and ChatGPT. (Mostly ChatGPT! LOL)
+
+<div align="center">
+             <img src="/images/window.png" width="700" />
+             
+</div>
