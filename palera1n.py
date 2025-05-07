@@ -40,7 +40,7 @@ class Palera1nGUI:
             "SAFE MODE -l": "palera1n -sl",
             "SAFE MODE -f": "palera1n -sf",
             "DEVICE INFO": "palera1n -I",
-            "EXIT RECOV": "palera1n -n",
+            "EXIT RECOVERY": "palera1n -n",
             "VERSION": "palera1n --version"
 
         }
