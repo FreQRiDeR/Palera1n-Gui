@@ -33,13 +33,13 @@ class Palera1nGUI:
             "HELP": "palera1n -h",
             "ROOTLESS": "palera1n -l",
             "ROOTFUL": "palera1n -f",
-            "CLEAN FS": "palera1n -C",
             "CREATE FAKEFS": "palera1n -cf",
+            "DEVICE INFO": "palera1n -I",
             "GET PALERA1N": "print Go to: https://palera.in",
             "REMOVE JB": "palera1n --force-revert",
             "SAFE MODE -l": "palera1n -sl",
             "SAFE MODE -f": "palera1n -sf",
-            "DEVICE INFO": "palera1n -I",
+            "CLEAN FS": "palera1n -C",
             "EXIT RECOVERY": "palera1n -n",
             "VERSION": "palera1n --version"
 
