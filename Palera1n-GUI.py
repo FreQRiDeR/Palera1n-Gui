@@ -59,7 +59,7 @@ class Palera1nGUI:
         self.add_footer_text()
 
     def add_header_image(self):
-        image_path = resource_path("images/palera1n_gui.png")
+        image_path = resource_path("palera1n_gui.png")
         image = NSImage.alloc().initWithContentsOfFile_(image_path)
         if image:
             image_view = NSImageView.alloc().initWithFrame_(NSMakeRect(0, 280, 400, 130))
