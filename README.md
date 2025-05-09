@@ -1,5 +1,5 @@
 <div align="center">
-             <img src="/images/palera1n.png" width="800" />
+             <img src="/images/palera1n_gui.png" width="800" />
              <h1>PALERA1N GUI APP</h1>
 </div>
 
