@@ -49,7 +49,7 @@ class Palera1nGUI:
             "REMOVE JB": "palera1n --force-revert",
             "SAFE MODE -l": "palera1n -sl",
             "SAFE MODE -f": "palera1n -sf",
-            "CLEAN FS": "palera1n -C",
+            "CLEAN FS": "palera1n -Cf",
             "EXIT RECOVERY": "palera1n -n",
             "VERSION": "palera1n --version"
         }
