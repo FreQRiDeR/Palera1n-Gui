@@ -71,7 +71,7 @@ class Palera1nGUI:
 
     def add_footer_text(self):
         # "by" label
-        by_label = NSTextField.alloc().initWithFrame_(NSMakeRect(115, 30, 100, 20))
+        by_label = NSTextField.alloc().initWithFrame_(NSMakeRect(110, 30, 100, 20))
         by_label.setStringValue_("by")
         by_label.setEditable_(False)
         by_label.setBezeled_(False)
@@ -81,7 +81,7 @@ class Palera1nGUI:
         by_label.setSelectable_(False)
 
         # "FreQRiDeR" label
-        author_label = NSTextField.alloc().initWithFrame_(NSMakeRect(140, 13, 100, 20))
+        author_label = NSTextField.alloc().initWithFrame_(NSMakeRect(135, 13, 100, 20))
         author_label.setStringValue_("FreQRiDeR")
         author_label.setEditable_(False)
         author_label.setBezeled_(False)
@@ -100,7 +100,7 @@ class Palera1nGUI:
         button_height = 30
         spacing_x = 30
         spacing_y = 10
-        start_x = 40
+        start_x = 35
         start_y = 260
         buttons_per_column = 6
 
