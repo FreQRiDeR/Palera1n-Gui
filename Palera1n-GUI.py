@@ -1,9 +1,10 @@
 import subprocess
 import sys
 import os
+import webbrowser
 from Cocoa import (
     NSApplication, NSWindow, NSButton, NSImageView, NSTextField,
-    NSImage, NSMakeRect, NSBackingStoreBuffered,NSFont,
+    NSImage, NSMakeRect, NSBackingStoreBuffered, NSFont,
     NSWindowStyleMaskTitled, NSWindowStyleMaskClosable,
     NSWindowStyleMaskResizable
 )
@@ -39,19 +40,20 @@ class Palera1nGUI:
         self.window.setTitle_("Palera1n Launcher")
         self.window.makeKeyAndOrderFront_(None)
 
+        palera1n_path = resource_path("bin/palera1n")
         self.commands = {
-            "HELP": "palera1n -h",
-            "ROOTLESS": "palera1n -l",
-            "ROOTFUL": "palera1n -f",
-            "CREATE FAKEFS": "palera1n -cf",
-            "DEVICE INFO": "palera1n -I",
-            "GET PALERA1N": "print Go to: https://palera.in",
-            "REMOVE JB": "palera1n --force-revert",
-            "SAFE MODE -l": "palera1n -sl",
-            "SAFE MODE -f": "palera1n -sf",
-            "CLEAN FS": "palera1n -Cf",
-            "EXIT RECOVERY": "palera1n -n",
-            "VERSION": "palera1n --version"
+            "HELP": f"{palera1n_path} -h",
+            "ROOTLESS": f"{palera1n_path} -l",
+            "ROOTFUL": f"{palera1n_path} -f",
+            "CREATE FAKEFS": f"{palera1n_path} -cf",
+            "DEVICE INFO": f"{palera1n_path} -I",
+            "PALERA1N INFO": "https://palera.in",
+            "REMOVE JB": f"{palera1n_path} --force-revert",
+            "SAFE MODE -l": f"{palera1n_path} -sl",
+            "SAFE MODE -f": f"{palera1n_path} -sf",
+            "CLEAN FS": f"{palera1n_path} -Cf",
+            "EXIT RECOVERY": f"{palera1n_path} -n",
+            "VERSION": f"{palera1n_path} --version",
         }
 
         self.add_header_image()
@@ -59,12 +61,12 @@ class Palera1nGUI:
         self.add_footer_text()
 
     def add_header_image(self):
-        image_path = resource_path("palera1n_gui.png")
+        image_path = resource_path("images/palera1n_gui.png")
         image = NSImage.alloc().initWithContentsOfFile_(image_path)
         if image:
             image_view = NSImageView.alloc().initWithFrame_(NSMakeRect(0, 280, 400, 130))
             image_view.setImage_(image)
-            image_view.setImageScaling_(2)  # 2 = NSImageScaleProportionallyUpOrDown
+            image_view.setImageScaling_(2)  # NSImageScaleProportionallyUpOrDown
             self.window.contentView().addSubview_(image_view)
         else:
             print("Image not loaded")
@@ -93,8 +95,6 @@ class Palera1nGUI:
         self.window.contentView().addSubview_(by_label)
         self.window.contentView().addSubview_(author_label)
 
-
-
     def create_buttons(self):
         button_width = 150
         button_height = 30
@@ -113,7 +113,10 @@ class Palera1nGUI:
             button = NSButton.alloc().initWithFrame_(NSMakeRect(x, y, button_width, button_height))
             button.setTitle_(label)
             button.setTarget_(self)
-            button.setAction_("runCommand:")
+            if label == "PALERA1N INFO":
+                button.setAction_("openURL:")
+            else:
+                button.setAction_("runCommand:")
             button.setTag_(index)
             self.window.contentView().addSubview_(button)
 
@@ -133,6 +136,12 @@ class Palera1nGUI:
             subprocess.run(['osascript', '-e', applescript])
         except Exception as e:
             print(f"Error launching Terminal: {e}")
+
+    def openURL_(self, sender):
+        index = sender.tag()
+        label = list(self.commands.keys())[index]
+        url = self.commands[label]
+        webbrowser.open(url)
 
     def run(self):
         self.app.run()
