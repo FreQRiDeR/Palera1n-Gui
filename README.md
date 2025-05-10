@@ -27,7 +27,7 @@ pyinstaller Palera1n-GUI.spec
 open ./dist/
 ```
 
-*Once done, you'll find the application generated at `./dist/Palera1n-GUI.app`:
+*Once done, you'll find the application generated at `./dist/Palera1n-GUI.app`
 
 * By FreQRiDeR and ChatGPT. (Mostly ChatGPT! LOL)
 
