@@ -4,6 +4,7 @@
 - Added built in palera1n exe. 
 - No longer relies on palera1n in $PATH. Is now standalone app.
 - Replaced "GET PALERA1N" button with "PALERA1N INFO" link to palera1n documentation.
+- Added "v1.0.2" to GUI
 
 ## 1.0.0
 - Initial release

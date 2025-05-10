@@ -92,8 +92,20 @@ class Palera1nGUI:
         author_label.setFont_(NSFont.systemFontOfSize_(13))
         author_label.setSelectable_(False)
 
+        # "v1.0.2" label
+        version_label = NSTextField.alloc().initWithFrame_(NSMakeRect(117, 285, 100, 20))
+        version_label.setStringValue_("v1.0.2")
+        version_label.setEditable_(False)
+        version_label.setBezeled_(False)
+        version_label.setDrawsBackground_(False)
+        version_label.setAlignment_(1)  # Center
+        version_label.setFont_(NSFont.systemFontOfSize_(10))
+        version_label.setSelectable_(False)
+
+
         self.window.contentView().addSubview_(by_label)
         self.window.contentView().addSubview_(author_label)
+        self.window.contentView().addSubview_(version_label)
 
     def create_buttons(self):
         button_width = 150
@@ -101,7 +113,7 @@ class Palera1nGUI:
         spacing_x = 30
         spacing_y = 10
         start_x = 35
-        start_y = 260
+        start_y = 255
         buttons_per_column = 6
 
         for index, (label, _) in enumerate(self.commands.items()):
