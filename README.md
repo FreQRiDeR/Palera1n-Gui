@@ -12,7 +12,7 @@ PALERA1N GUI WRITTEN IN PYTHON
 
 ```sh
 # Launch GUI
-python3 OpenCore-Patcher-GUI.command
+python3 Palera1n-GUI.py
 ```
 * To build app from source yourself run:
 
