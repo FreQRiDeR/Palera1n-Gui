@@ -8,6 +8,27 @@ PALERA1N GUI WRITTEN IN PYTHON
 * For macOS x86_64 only (For now).
 * Launches palera1n commands in terminal.
 * Now with built-in palera1n executable! (v1.0.2)
+* To run the project from source, simply invoke via python3:
+
+```sh
+# Launch GUI
+python3 OpenCore-Patcher-GUI.command
+```
+* To build app from source yourself run:
+
+```sh
+# Install PyInstaller
+pip3 install pyinstaller
+# Move into project directory
+cd ~/Palera1n-GUI
+# Create the pyinstaller based Application
+pyinstaller Palera1n-GUI.spec
+# Open build folder
+open ./dist/
+```
+
+*Once done, you'll find the application generated at `./dist/Palera1n-GUI.app`:
+
 * By FreQRiDeR and ChatGPT. (Mostly ChatGPT! LOL)
 
 
