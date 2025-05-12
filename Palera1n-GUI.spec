@@ -1,7 +1,8 @@
 # Palera1n-GUI.spec
 from PyInstaller.building.build_main import Analysis, PYZ, EXE, COLLECT
 from PyInstaller.building.datastruct import TOC
-from PyInstaller.building.osx import BUNDLE
+
+block_cipher = None
 
 a = Analysis(
     ['Palera1n-GUI.py'],
@@ -10,6 +11,7 @@ a = Analysis(
     datas=[
         ('bin/palera1n', 'bin'),
         ('images/palera1n_gui.png', 'images'),
+        ('images/icon.icns', 'images')
     ],
     hiddenimports=[],
     hookspath=[],
@@ -17,11 +19,11 @@ a = Analysis(
     excludes=[],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
-    cipher=None,
+    cipher=block_cipher,
     noarchive=False
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=None)
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
     pyz,
@@ -35,20 +37,17 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False
+    console=False,
+    icon='images/icon.icns'
+    plist='Info.plist'
 )
 
-app = BUNDLE(
+coll = COLLECT(
     exe,
-    name='Palera1n-GUI.app',
-    icon='images/icon.icns',
-    bundle_identifier='com.freqrider.palera1ngui',
-    info_plist={
-        'CFBundleName': 'Palera1n-GUI',
-        'CFBundleDisplayName': 'Palera1n-GUI',
-        'CFBundleIdentifier': 'com.freqrider.palera1ngui',
-        'CFBundleVersion': '1.0.2',
-        'CFBundleShortVersionString': '1.0.2',
-        'NSHighResolutionCapable': 'True'
-    }
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    name='Palera1n-GUI'
 )
