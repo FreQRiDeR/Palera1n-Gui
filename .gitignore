@@ -3,3 +3,17 @@
 build/Palera1n-GUI/Palera1n-GUI
 dist/Palera1n-GUI/_internal/Python
 dist/Palera1n-GUI/Palera1n-GUI
+venv/bin/activate
+venv/bin/macho_dump
+venv/bin/macho_find
+venv/bin/macho_standalone
+venv/bin/pip
+venv/bin/pip3
+venv/bin/pyi-archive_viewer
+venv/bin/pyi-bindepend
+venv/bin/pyi-grab_version
+venv/bin/pyi-makespec
+venv/bin/pyi-set_version
+venv/bin/pyinstaller
+venv/bin/python
+venv/bin/python3
