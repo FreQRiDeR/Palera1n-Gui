@@ -13,21 +13,30 @@ PALERA1N GUI WRITTEN IN PYTHON
 * ⛔ macOS Gatekeeper & Unsigned Apps...
     Gatekeeper will still show a warning, since it’s not notarized.
     Users can bypass this by right-clicking the app and choosing "Open", then confirming the prompt.
-* To run the project from source, simply invoke via python3:
+  
+* To run the project from source, from working directory:
 
 ```sh
+# Create Python 3.11 venv. From working directory, run:
+/usr/local/opt/python@3.11/bin/python3 -m venv venv # your path may vary
+# Activate venv
+source venv/bin/activate
 # Launch GUI
 python3 Palera1n-GUI.py
 ```
-* To build app from source yourself run:
+* To build app from source yourself:
 
 ```sh
-# Install PyInstaller
-pip3 install pyinstaller
+# Create Python 3.11 venv. From working directory, run:
+/usr/local/opt/python@3.11/bin/python3 -m venv venv # your path may vary
+# Activate venv
+source venv/bin/activate
+#Install PyInstaller
+pip3 install pyinstaller pyobjc
 # Move into project directory
 cd ~/Palera1n-GUI
 # Create the pyinstaller based Application
-pyinstaller Palera1n-GUI.spec
+python -m PyInstaller Palera1n-GUI.spec
 # Open build folder
 open ./dist/
 ```
