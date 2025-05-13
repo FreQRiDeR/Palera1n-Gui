@@ -12,12 +12,10 @@ from Foundation import NSObject, NSAutoreleasePool
 
 
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        base_path = sys._MEIPASS
-    except AttributeError:
-        base_path = os.path.abspath(".")
-    return os.path.join(base_path, relative_path)
+    """Get absolute path to resource, works for dev and for PyInstaller."""
+    if getattr(sys, 'frozen', False):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.abspath(relative_path)
 
 
 class AppDelegate(NSObject):
@@ -37,23 +35,23 @@ class Palera1nGUI:
             NSBackingStoreBuffered,
             False
         )
-        self.window.setTitle_("Palera1n Launcher")
+        self.window.setTitle_("Palera1n-GUI")
         self.window.makeKeyAndOrderFront_(None)
 
         palera1n_path = resource_path("bin/palera1n")
         self.commands = {
-            "HELP": f"{palera1n_path} -h",
-            "ROOTLESS": f"{palera1n_path} -l",
-            "ROOTFUL": f"{palera1n_path} -f",
-            "CREATE FAKEFS": f"{palera1n_path} -cf",
-            "DEVICE INFO": f"{palera1n_path} -I",
+            "HELP": f'"{palera1n_path}" -h',
+            "ROOTLESS": f'"{palera1n_path}" -l',
+            "ROOTFUL": f'"{palera1n_path}" -f',
+            "CREATE FAKEFS": f'"{palera1n_path}" -cf',
+            "DEVICE INFO": f'"{palera1n_path}" -I',
             "PALERA1N INFO": "https://palera.in",
-            "REMOVE JB": f"{palera1n_path} --force-revert",
-            "SAFE MODE -l": f"{palera1n_path} -sl",
-            "SAFE MODE -f": f"{palera1n_path} -sf",
-            "CLEAN FS": f"{palera1n_path} -Cf",
-            "EXIT RECOVERY": f"{palera1n_path} -n",
-            "VERSION": f"{palera1n_path} --version",
+            "REMOVE JB": f'"{palera1n_path}" --force-revert',
+            "SAFE MODE -l": f'"{palera1n_path}" -sl',
+            "SAFE MODE -f": f'"{palera1n_path}" -sf',
+            "CLEAN FS": f'"{palera1n_path}" -Cf',
+            "EXIT RECOVERY": f'"{palera1n_path}" -n',
+            "VERSION": f'"{palera1n_path}" --version'
         }
 
         self.add_header_image()
@@ -92,9 +90,9 @@ class Palera1nGUI:
         author_label.setFont_(NSFont.systemFontOfSize_(13))
         author_label.setSelectable_(False)
 
-        # "v1.0.2" label
+        # "v1.0.3" label
         version_label = NSTextField.alloc().initWithFrame_(NSMakeRect(117, 285, 100, 20))
-        version_label.setStringValue_("v1.0.2")
+        version_label.setStringValue_("v1.0.3")
         version_label.setEditable_(False)
         version_label.setBezeled_(False)
         version_label.setDrawsBackground_(False)
@@ -102,17 +100,16 @@ class Palera1nGUI:
         version_label.setFont_(NSFont.systemFontOfSize_(10))
         version_label.setSelectable_(False)
 
-
         self.window.contentView().addSubview_(by_label)
         self.window.contentView().addSubview_(author_label)
         self.window.contentView().addSubview_(version_label)
 
     def create_buttons(self):
-        button_width = 150
-        button_height = 30
+        button_width = 135
+        button_height = 22
         spacing_x = 30
-        spacing_y = 10
-        start_x = 35
+        spacing_y = 15
+        start_x = 52
         start_y = 255
         buttons_per_column = 6
 
@@ -137,15 +134,19 @@ class Palera1nGUI:
         label = list(self.commands.keys())[index]
         command = self.commands[label]
 
-        command_escaped = command.replace('"', '\\"')
-        applescript = f'''
+        # Construct AppleScript safely, handling quotes
+        escaped_command = command.replace('\\', '\\\\').replace('"', '\\"')
+        full_command = f'zsh -l -c "{escaped_command}"'
+        full_command = full_command.replace('\\', '\\\\').replace('"', '\\"')
+
+        apple_script = f'''
         tell application "Terminal"
-            do script "zsh -l -c \\"{command_escaped}\\""
+            do script "{full_command}"
             activate
         end tell
         '''
         try:
-            subprocess.run(['osascript', '-e', applescript])
+            subprocess.run(['osascript', '-e', apple_script])
         except Exception as e:
             print(f"Error launching Terminal: {e}")
 
