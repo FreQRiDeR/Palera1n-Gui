@@ -105,11 +105,11 @@ class Palera1nGUI:
         self.window.contentView().addSubview_(version_label)
 
     def create_buttons(self):
-        button_width = 150
-        button_height = 30
+        button_width = 135
+        button_height = 22
         spacing_x = 30
-        spacing_y = 10
-        start_x = 35
+        spacing_y = 15
+        start_x = 52
         start_y = 255
         buttons_per_column = 6
 
