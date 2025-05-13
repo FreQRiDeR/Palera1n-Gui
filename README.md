@@ -18,7 +18,7 @@ PALERA1N GUI WRITTEN IN PYTHON
 
 ```sh
 # Create Python 3.11 venv. From working directory, run:
-/usr/local/opt/python@3.11/bin/python3 -m venv venv # your path may vary
+/usr/local/opt/python@3.11/bin/python3.11 -m venv venv # your path may vary
 # Activate venv
 source venv/bin/activate
 # Launch GUI
@@ -28,7 +28,7 @@ python3 Palera1n-GUI.py
 
 ```sh
 # Create Python 3.11 venv. From working directory, run:
-/usr/local/opt/python@3.11/bin/python3 -m venv venv # your path may vary
+/usr/local/opt/python@3.11/bin/python3.11 -m venv venv # your path may vary
 # Activate venv
 source venv/bin/activate
 #Install PyInstaller
