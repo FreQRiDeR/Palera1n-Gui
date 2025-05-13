@@ -17,3 +17,4 @@ venv/bin/pyi-set_version
 venv/bin/pyinstaller
 venv/bin/python
 venv/bin/python3
+dist/Palera1n-GUI/_internal/bin/palera1n
