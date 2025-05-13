@@ -21,6 +21,8 @@ PALERA1N GUI WRITTEN IN PYTHON
 /usr/local/opt/python@3.11/bin/python3.11 -m venv venv # your path may vary
 # Activate venv
 source venv/bin/activate
+#Install PyInstaller, pyobjc
+pip3 install pyinstaller pyobjc
 # Launch GUI
 python3 Palera1n-GUI.py
 ```
@@ -31,7 +33,7 @@ python3 Palera1n-GUI.py
 /usr/local/opt/python@3.11/bin/python3.11 -m venv venv # your path may vary
 # Activate venv
 source venv/bin/activate
-#Install PyInstaller
+#Install PyInstaller, pyobjc
 pip3 install pyinstaller pyobjc
 # Move into project directory
 cd ~/Palera1n-GUI
