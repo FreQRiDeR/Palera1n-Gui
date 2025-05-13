@@ -8,6 +8,11 @@ PALERA1N GUI WRITTEN IN PYTHON
 * For macOS x86_64 only (For now).
 * Launches palera1n commands in terminal.
 * Now with built-in palera1n executable! (v1.0.2)
+* Now with built-in Python Libraries! (v1.0.3)
+* Truly a stand-alone app now. 
+* ⛔ macOS Gatekeeper & Unsigned Apps...
+    Gatekeeper will still show a warning, since it’s not notarized.
+    Users can bypass this by right-clicking the app and choosing "Open", then confirming the prompt.
 * To run the project from source, simply invoke via python3:
 
 ```sh
