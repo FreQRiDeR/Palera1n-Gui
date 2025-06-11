@@ -1,5 +1,9 @@
 # Palera1n-GUI Changelog
 
+## 1.0.4
+- Added Quit, Command menuitems with respective keyboard shortcuts.
+- About Palera1n-GUI menuitem links to this repository. 
+
 ## 1.0.3
 - Now with built-in Python 3.11 libraries.
 - No longer relies on local Python install, version.
