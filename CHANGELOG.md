@@ -2,6 +2,7 @@
 
 ## 1.0.5
 - Updated palera1n binary to v2.2.1
+- Switched to DMG distribution.
 
 ## 1.0.4
 - Added Quit, Command menuitems with respective keyboard shortcuts.
