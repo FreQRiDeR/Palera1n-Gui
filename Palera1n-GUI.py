@@ -162,7 +162,7 @@ class Palera1nGUI:
 
         # "v1.0.3" label
         version_label = NSTextField.alloc().initWithFrame_(NSMakeRect(117, 285, 100, 20))
-        version_label.setStringValue_("v1.0.4")
+        version_label.setStringValue_("v1.0.5")
         version_label.setEditable_(False)
         version_label.setBezeled_(False)
         version_label.setDrawsBackground_(False)

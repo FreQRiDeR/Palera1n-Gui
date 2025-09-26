@@ -1,5 +1,8 @@
 # Palera1n-GUI Changelog
 
+## 1.0.5
+- Updated palera1n binary to v2.2.1
+
 ## 1.0.4
 - Added Quit, Command menuitems with respective keyboard shortcuts.
 - About Palera1n-GUI menuitem links to this repository. 

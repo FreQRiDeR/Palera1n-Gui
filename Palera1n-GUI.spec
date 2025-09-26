@@ -4,7 +4,7 @@ from PyInstaller.utils.hooks import collect_submodules
 
 # Metadata
 app_name = 'Palera1n-GUI'
-version = '1.0.4'
+version = '1.0.5'
 script_path = 'Palera1n-GUI.py'
 icon_file = 'images/icon.icns'
 
