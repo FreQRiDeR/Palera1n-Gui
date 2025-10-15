@@ -1,5 +1,9 @@
 # Palera1n-GUI Changelog
 
+## 1.0.6
+- Moved to PyQt6 for macOS, LINUX CROSS PLATFORM COMPATIBILITY. (qt-cross-platform build)
+- Added .deb Linux package (For x64, Debian based)
+  
 ## 1.0.5
 - Updated palera1n binary to v2.2.1
 - Switched to DMG distribution.
