@@ -1,5 +1,5 @@
 <div align="center">
-             <img src="/images/palera1n.png" width="1280" />
+             <img src="/images/palera1n.png" width="700" />
              <h1>PALERA1N GUI APP</h1>
 </div>
 
@@ -55,6 +55,6 @@ sudo dpkg -i palera1n-gui_1.0.6.deb
 
 
 <div align="center">
-             <img src="/images/window.png" width="700" />
+             <img src="/images/window.png" width="500" />
              
 </div>
