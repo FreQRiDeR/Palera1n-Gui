@@ -19,3 +19,4 @@ venv/bin/python
 venv/bin/python3
 dist/Palera1n-GUI/_internal/bin/palera1n
 dist/Palera1n-GUI/_internal/bin/linux/palera1n
+/dist

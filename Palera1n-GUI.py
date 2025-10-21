@@ -2,35 +2,57 @@ import subprocess
 import sys
 import os
 import webbrowser
-from Cocoa import (
-    NSApplication, NSWindow, NSButton, NSImageView, NSTextField,
-    NSImage, NSMakeRect, NSBackingStoreBuffered, NSFont,
-    NSWindowStyleMaskTitled, NSWindowStyleMaskClosable,
-    NSWindowStyleMaskResizable, NSMenu, NSMenuItem
+import shutil
+from pathlib import Path
+from functools import partial
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QWidget, QVBoxLayout,
+    QGridLayout, QPushButton, QLabel, QMessageBox
 )
-from Foundation import NSObject, NSAutoreleasePool
-import objc
-
+from PyQt6.QtGui import QPixmap, QFont, QAction, QIcon, QKeySequence
+from PyQt6.QtCore import Qt, QEvent
 
 def resource_path(relative_path):
     """Get absolute path to resource, works for dev and for PyInstaller."""
     if getattr(sys, 'frozen', False):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.abspath(relative_path)
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
 
-
-class AppDelegate(NSObject):
-    def applicationDidFinishLaunching_(self, notification):
-        pass
-
-
-class Palera1nGUI:
+class Palera1nGUI(QMainWindow):
     def __init__(self):
-        self.app = NSApplication.sharedApplication()
-        self.delegate = AppDelegate.alloc().init()
-        self.app.setDelegate_(self.delegate)
+        super().__init__()
+        self.platform = sys.platform
+        print("DEBUG: Palera1nGUI.__init__() starting...")
 
-        palera1n_path = resource_path("bin/palera1n")
+        # Platform-specific binary path
+        if self.platform == 'darwin':
+            palera1n_path = resource_path("bin/macos/palera1n")
+        elif self.platform == 'linux':
+            palera1n_path = resource_path("bin/linux/palera1n")
+        elif self.platform == 'win32':
+            palera1n_path = resource_path("bin/windows/palera1n.exe")
+        else:
+            palera1n_path = resource_path("bin/palera1n")
+
+        # Verify binary exists and is executable
+        if not os.path.exists(palera1n_path):
+            print(f"Warning: Bundled binary not found at {palera1n_path}")
+            system_binary = shutil.which('palera1n')
+            if system_binary:
+                palera1n_path = system_binary
+                print(f"Using system palera1n at: {palera1n_path}")
+            else:
+                print("Error: No palera1n binary found!")
+        elif not os.access(palera1n_path, os.X_OK):
+            print(f"Warning: Binary not executable at {palera1n_path}")
+            try:
+                os.chmod(palera1n_path, 0o755)
+                print(f"Made binary executable: {palera1n_path}")
+            except Exception as e:
+                print(f"Could not make binary executable: {e}")
+
         self.commands = {
             "HELP": f'"{palera1n_path}" -h',
             "ROOTLESS": f'"{palera1n_path}" -l',
@@ -46,194 +68,210 @@ class Palera1nGUI:
             "VERSION": f'"{palera1n_path}" --version'
         }
 
+        self.shortcuts = {
+            "HELP": "Ctrl+H",
+            "ROOTLESS": "Ctrl+L",
+            "ROOTFUL": "Ctrl+F",
+            "CREATE FAKEFS": "Ctrl+Shift+F",
+            "DEVICE INFO": "Ctrl+I",
+            "PALERA1N INFO": "Ctrl+Shift+I",
+            "REMOVE JB": "Ctrl+R",
+            "SAFE MODE -l": "Ctrl+Alt+L",
+            "SAFE MODE -f": "Ctrl+Alt+F",
+            "CLEAN FS": "Ctrl+Shift+C",
+            "EXIT RECOVERY": "Ctrl+E",
+            "VERSION": "Ctrl+V"
+        }
+
+        self.init_ui()
+        print("DEBUG: Palera1nGUI.__init__() complete")
+
+    def create_command_action(self, label):
+        action = QAction(label, self)
+        action.setObjectName(f"cmd_{label}")
+        action.setMenuRole(QAction.MenuRole.NoRole)
+        if label in self.shortcuts:
+            action.setShortcut(QKeySequence(self.shortcuts[label]))
+        if label == "PALERA1N INFO":
+            action.triggered.connect(lambda checked=False, label=label: self.open_url(label))
+        else:
+            action.triggered.connect(lambda checked=False, label=label: self.run_command(label))
+        return action
+
+    def init_ui(self):
+        self.setWindowTitle("Palera1n-GUI")
+        self.setFixedSize(400, 450)
+
+        icon_path = resource_path("images/icon.png")
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
+
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        main_layout = QVBoxLayout(central_widget)
+        main_layout.setSpacing(10)
+        main_layout.setContentsMargins(20, 20, 20, 20)
+
         self.setup_menu_bar()
-
-        self.window = NSWindow.alloc().initWithContentRect_styleMask_backing_defer_(
-            NSMakeRect(200.0, 100.0, 400.0, 400.0),
-            NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable,
-            NSBackingStoreBuffered,
-            False
-        )
-        self.window.setTitle_("Palera1n-GUI")
-        self.window.makeKeyAndOrderFront_(None)
-
-        self.add_header_image()
-        self.create_buttons()
-        self.add_footer_text()
+        self.add_header_image(main_layout)
+        self.create_buttons(main_layout)
+        self.add_footer(main_layout)
 
     def setup_menu_bar(self):
-        main_menu = NSMenu.alloc().init()
+        menubar = self.menuBar()
 
-        # App menu (with Quit and About)
-        app_menu_item = NSMenuItem.alloc().init()
-        main_menu.addItem_(app_menu_item)
-        app_menu = NSMenu.alloc().initWithTitle_("App")
-        about_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
-            "About Palera1n-GUI", "openAboutURL:", ""
-        )
-        about_item.setTarget_(self)
-        app_menu.addItem_(about_item)
-        quit_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
-            "Quit Palera1n-GUI", "terminate:", "q"
-        )
-        app_menu.addItem_(quit_item)
-        app_menu_item.setSubmenu_(app_menu)
+        # ===== APP MENU =====
+        app_menu = menubar.addMenu("&File")
 
-        # Commands menu
-        commands_menu_item = NSMenuItem.alloc().init()
-        main_menu.addItem_(commands_menu_item)
-        commands_menu = NSMenu.alloc().initWithTitle_("Commands")
-        for idx, label in enumerate(self.commands.keys()):
-            # Set keyboard shortcuts for specific commands
-            key_equiv = ""
-            modifier_mask = 0
-            if label == "HELP":
-                key_equiv = "h"
-            elif label == "ROOTLESS":
-                key_equiv = "l"
-            elif label == "ROOTFUL":
-                key_equiv = "f"
-            elif label == "SAFE MODE -l":
-                key_equiv = "L"
-            elif label == "SAFE MODE -f":
-                key_equiv = "F"
-            elif label == "PALERA1N INFO":
-                key_equiv = "i"
-            elif label == "DEVICE INFO":
-                key_equiv = "I"
-            elif label == "VERSION":
-                key_equiv = "v"
-            elif label == "EXIT RECOVERY":
-                key_equiv = "e"
+        about_action = QAction("&About Palera1n-GUI", self)
+        about_action.triggered.connect(self.open_about)
+        app_menu.addAction(about_action)
+        app_menu.addSeparator()
 
-            if label == "PALERA1N INFO":
-                item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
-                    label, "openURLFromMenu:", key_equiv
-                )
-                item.setTarget_(self)
-            else:
-                item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
-                    label, "runCommandFromMenu:", key_equiv
-                )
-                item.setTarget_(self)
-            item.setTag_(idx)
-            commands_menu.addItem_(item)
-        commands_menu_item.setSubmenu_(commands_menu)
+        quit_action = QAction("&Quit", self)
+        quit_action.setObjectName("app_quit")
+        quit_action.setMenuRole(QAction.MenuRole.QuitRole)
+        quit_action.setShortcut(QKeySequence("Ctrl+Q"))
+        quit_action.triggered.connect(QApplication.quit)
+        app_menu.addAction(quit_action)
 
-        NSApplication.sharedApplication().setMainMenu_(main_menu)
+        # ===== COMMANDS MENU =====
+        commands_menu = menubar.addMenu("&Commands")
+        for label in self.commands.keys():
+            action = self.create_command_action(label)
+            commands_menu.addAction(action)
 
-    def runCommandFromMenu_(self, sender):
-        self.runCommand_(sender)
-
-    def openURLFromMenu_(self, sender):
-        self.openURL_(sender)
-
-    def add_header_image(self):
+    def add_header_image(self, layout):
         image_path = resource_path("images/palera1n_gui.png")
-        image = NSImage.alloc().initWithContentsOfFile_(image_path)
-        if image:
-            image_view = NSImageView.alloc().initWithFrame_(NSMakeRect(0, 280, 400, 130))
-            image_view.setImage_(image)
-            image_view.setImageScaling_(2)  # NSImageScaleProportionallyUpOrDown
-            self.window.contentView().addSubview_(image_view)
+        if os.path.exists(image_path):
+            pixmap = QPixmap(image_path).scaled(
+                380, 120, Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation
+            )
+            image_label = QLabel()
+            image_label.setPixmap(pixmap)
+            image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(image_label)
         else:
-            print("Image not loaded")
+            title_label = QLabel("Palera1n GUI")
+            title_label.setFont(QFont("Arial", 24, QFont.Weight.Bold))
+            title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(title_label)
 
-    def add_footer_text(self):
-        # "by" label
-        by_label = NSTextField.alloc().initWithFrame_(NSMakeRect(110, 30, 100, 20))
-        by_label.setStringValue_("by")
-        by_label.setEditable_(False)
-        by_label.setBezeled_(False)
-        by_label.setDrawsBackground_(False)
-        by_label.setAlignment_(1)  # Center
-        by_label.setFont_(NSFont.systemFontOfSize_(13))
-        by_label.setSelectable_(False)
+        version_label = QLabel("v1.0.6")
+        version_label.setFont(QFont("Arial", 9))
+        version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(version_label)
 
-        # "FreQRiDeR" label
-        author_label = NSTextField.alloc().initWithFrame_(NSMakeRect(135, 13, 100, 20))
-        author_label.setStringValue_("FreQRiDeR")
-        author_label.setEditable_(False)
-        author_label.setBezeled_(False)
-        author_label.setDrawsBackground_(False)
-        author_label.setAlignment_(1)  # Center
-        author_label.setFont_(NSFont.systemFontOfSize_(13))
-        author_label.setSelectable_(False)
-
-        # "v1.0.3" label
-        version_label = NSTextField.alloc().initWithFrame_(NSMakeRect(117, 285, 100, 20))
-        version_label.setStringValue_("v1.0.5")
-        version_label.setEditable_(False)
-        version_label.setBezeled_(False)
-        version_label.setDrawsBackground_(False)
-        version_label.setAlignment_(1)  # Center
-        version_label.setFont_(NSFont.systemFontOfSize_(10))
-        version_label.setSelectable_(False)
-
-        self.window.contentView().addSubview_(by_label)
-        self.window.contentView().addSubview_(author_label)
-        self.window.contentView().addSubview_(version_label)
-
-    def create_buttons(self):
-        button_width = 135
-        button_height = 22
-        spacing_x = 30
-        spacing_y = 15
-        start_x = 52
-        start_y = 255
+    def create_buttons(self, layout):
+        grid_layout = QGridLayout()
+        grid_layout.setSpacing(10)
         buttons_per_column = 6
 
-        for index, (label, _) in enumerate(self.commands.items()):
+        for index, label in enumerate(self.commands.keys()):
             col = index // buttons_per_column
             row = index % buttons_per_column
-            x = start_x + col * (button_width + spacing_x)
-            y = start_y - row * (button_height + spacing_y)
-
-            button = NSButton.alloc().initWithFrame_(NSMakeRect(x, y, button_width, button_height))
-            button.setTitle_(label)
-            button.setTarget_(self)
+            button = QPushButton(label)
+            button.setMinimumHeight(32)
+            button.setMaximumWidth(130)
             if label == "PALERA1N INFO":
-                button.setAction_("openURL:")
+                button.clicked.connect(lambda checked=False, label=label: self.open_url(label))
             else:
-                button.setAction_("runCommand:")
-            button.setTag_(index)
-            self.window.contentView().addSubview_(button)
+                button.clicked.connect(lambda checked=False, label=label: self.run_command(label))
+            grid_layout.addWidget(button, row, col)
 
-    def runCommand_(self, sender):
-        index = sender.tag()
-        label = list(self.commands.keys())[index]
+        grid_layout.setColumnStretch(0, 0)
+        grid_layout.setColumnStretch(1, 0)
+        layout.addLayout(grid_layout)
+
+    def add_footer(self, layout):
+        layout.addStretch()
+        by_label = QLabel("by")
+        by_label.setFont(QFont("Arial", 11))
+        by_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(by_label)
+
+        author_label = QLabel("FreQRiDeR")
+        author_label.setFont(QFont("Arial", 11))
+        author_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(author_label)
+
+    def run_command(self, label):
+        sender = self.sender()
+        if sender and sender.objectName() == "app_quit":
+            print("DEBUG: run_command ignored — triggered by Quit action")
+            return
+
+        if QApplication.instance().closingDown():
+            print(f"DEBUG: Ignoring command '{label}' during shutdown")
+            return
+
         command = self.commands[label]
+        print(f"DEBUG: run_command triggered for '{label}'")
 
-        # Construct AppleScript safely, handling quotes
-        escaped_command = command.replace('\\', '\\\\').replace('"', '\\"')
-        full_command = f'zsh -l -c "{escaped_command}"'
-        full_command = full_command.replace('\\', '\\\\').replace('"', '\\"')
-
-        apple_script = f'''
-        tell application "Terminal"
-            do script "{full_command}"
-            activate
-        end tell
-        '''
         try:
-            subprocess.run(['osascript', '-e', apple_script])
+            if self.platform == 'darwin':
+                safe_command = command.replace('"', '\\"')
+                apple_script = f'''
+                tell application "Terminal"
+                    do script "zsh -l -c \\"{safe_command}\\""
+                    activate
+                end tell
+                '''
+                subprocess.Popen(['osascript', '-e', apple_script])
+            elif self.platform == 'linux':
+                terminals = [
+                    ['gnome-terminal', '--', 'bash', '-c', f'{command}; read -p "Press Enter to close..."'],
+                    ['konsole', '-e', 'bash', '-c', f'{command}; read -p "Press Enter to close..."'],
+                    ['xterm', '-e', f'bash -c \'{command}; read -p "Press Enter to close..."\' '],
+                    ['x-terminal-emulator', '-e', 'bash', '-c', f'{command}; read -p "Press Enter to close..."']
+                ]
+                for term_cmd in terminals:
+                    try:
+                        subprocess.Popen(term_cmd)
+                        break
+                    except FileNotFoundError:
+                        continue
+                else:
+                    QMessageBox.warning(self, "Terminal Not Found",
+                        "Could not find a suitable terminal emulator.\n"
+                        "Please install gnome-terminal, konsole, or xterm.")
+            elif self.platform == 'win32':
+                subprocess.Popen(['cmd', '/c', 'start', 'cmd', '/k', command])
         except Exception as e:
-            print(f"Error launching Terminal: {e}")
+            QMessageBox.critical(self, "Error", f"Failed to launch terminal:\n{e}")
 
-    def openURL_(self, sender):
-        index = sender.tag()
-        label = list(self.commands.keys())[index]
-        url = self.commands[label]
-        webbrowser.open(url)
+    def open_url(self, label):
+        webbrowser.open(self.commands[label])
 
-    def openAboutURL_(self, sender):
+    def open_about(self):
         webbrowser.open("https://github.com/FreQRiDeR/Palera1n-Gui/")
 
-    def run(self):
-        self.app.run()
+    def event(self, e):
+        if e.type() == QEvent.Type.Close:
+            print("DEBUG: Close event detected in event()")
+        if e.type() == QEvent.Type.Quit:
+            print("DEBUG: Quit event detected in event()")
+        return super().event(e)
 
+    def closeEvent(self, event):
+        print("DEBUG: closeEvent called!")
+        for action in self.findChildren(QAction):
+            if action.objectName().startswith("cmd_"):
+                try:
+                    action.triggered.disconnect()
+                    print(f"DEBUG: Disconnected {action.objectName()}")
+                except Exception as e:
+                    print(f"DEBUG: Failed to disconnect {action.objectName()}: {e}")
+        event.accept()
+
+def main():
+    app = QApplication(sys.argv)
+    app.setApplicationName("Palera1n-GUI")
+    app.aboutToQuit.connect(lambda: print("DEBUG: aboutToQuit signal triggered!"))
+    window = Palera1nGUI()
+    window.show()
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
-    pool = NSAutoreleasePool.alloc().init()
-    gui = Palera1nGUI()
-    gui.run()
+    main()
