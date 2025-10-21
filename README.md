@@ -5,7 +5,7 @@
 
 PALERA1N GUI WRITTEN IN PYTHON
 
-* For macOS x86_64 only (For now).
+* For macOS, Debian based Linux
 * Launches palera1n commands in terminal.
 * Now with built-in palera1n executable! (v1.0.2)
 * Now with built-in Python Libraries! (v1.0.3)
@@ -17,33 +17,39 @@ PALERA1N GUI WRITTEN IN PYTHON
 * To run the project from source, from working directory:
 
 ```sh
-# Create Python 3.11 venv. From working directory, run:
-/usr/local/opt/python@3.11/bin/python3.11 -m venv venv # your path may vary
+# Move into project directory
+cd ~/Palera1n-GUI
+# Create Python 3.13 venv. From working directory, run:
+python3.13 -m venv venv # your path may vary
 # Activate venv
 source venv/bin/activate
-#Install PyInstaller, pyobjc
-pip3 install pyinstaller pyobjc
-# Launch GUI
+# Install requirements
+pip install -r requirements.txt
+# Run python script
 python3 Palera1n-GUI.py
 ```
 * To build app from source yourself:
 
 ```sh
-# Create Python 3.11 venv. From working directory, run:
-/usr/local/opt/python@3.11/bin/python3.11 -m venv venv # your path may vary
-# Activate venv
-source venv/bin/activate
-#Install PyInstaller, pyobjc
-pip3 install pyinstaller pyobjc
 # Move into project directory
 cd ~/Palera1n-GUI
+# Create Python 3.* venv. From working directory, run:
+python3.13 -m venv venv # your path may vary
+# Activate venv
+source venv/bin/activate
+# Install requirements
+pip install -r requirements.txt
 # Create the pyinstaller based Application
 python -m PyInstaller Palera1n-GUI.spec
 # Open build folder
-open ./dist/
+open /dist/
+# To create .deb Linux package, run:
+./Palera1n-GUI_build.sh
+# To install deb, if you wish, run:
+sudo dpkg -i palera1n-gui_1.0.6.deb
 ```
 
-* Once done, you'll find the application generated at `./dist/Palera1n-GUI.app`
+* Once done, you'll find the application generated at `/dist/Palera1n-GUI.app`
 
 * By FreQRiDeR and ChatGPT. (Mostly ChatGPT! LOL)
 
