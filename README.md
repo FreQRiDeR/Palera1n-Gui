@@ -33,7 +33,7 @@ python3 Palera1n-GUI.py
 ```sh
 # Move into project directory
 cd ~/Palera1n-GUI
-# Create Python 3.* venv. From working directory, run:
+# Create Python 3.13 venv. From working directory, run:
 python3.13 -m venv venv # your path may vary
 # Activate venv
 source venv/bin/activate
