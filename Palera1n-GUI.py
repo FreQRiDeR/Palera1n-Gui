@@ -88,7 +88,7 @@ class Palera1nGUI(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setSpacing(10)
+        main_layout.setSpacing(15)
         main_layout.setContentsMargins(20, 20, 20, 20)
         
         # Setup menu bar
