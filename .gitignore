@@ -1,5 +1,5 @@
 *._*
 *.*
-build
-dist
-venv
+/build
+/dist
+/venv

@@ -93,11 +93,6 @@ if is_macos:
             'CFBundleGetInfoString': f"{app_name} by FreQRiDeR",
             'CFBundleVersion': version,
             'CFBundleShortVersionString': version,
-            'CFBundleIconFile': os.path.basename(icon_file),
-            'CFBundleIdentifier': 'com.freqrider.palera1ngui',
-            'CFBundlePackageType': 'APPL',
             'NSHighResolutionCapable': True,
-            'NSPrincipalClass': 'NSApplication',
-
         }
     )
