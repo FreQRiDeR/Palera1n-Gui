@@ -270,20 +270,18 @@ class Palera1nGUI(QMainWindow):
 
         try:
             if self.platform == 'darwin':
-                # macOS - use Terminal.app; minimal escaping for predictability
+                # Simplified AppleScript - just run the command in Terminal
                 escaped = command.replace('\\', '\\\\').replace('"', '\\"')
-                zsh_cmd = f'zsh -l -c "{escaped}"'
-                zsh_cmd = zsh_cmd.replace('\\', '\\\\').replace('"', '\\"')
-
                 apple_script = f'''
                 tell application "Terminal"
-                    do script "{zsh_cmd}"
+                    do script "{escaped}"
                     activate
                 end tell
                 '''
                 subprocess.Popen(['osascript', '-e', apple_script])
 
             elif self.platform == 'linux':
+                # Keep your existing Linux code
                 terminals = [
                     ['gnome-terminal', '--', 'bash', '-c', f'{command}; read -p "Press Enter to close..."'],
                     ['konsole', '-e', 'bash', '-c', f'{command}; read -p "Press Enter to close..."'],
