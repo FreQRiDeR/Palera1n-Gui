@@ -1,5 +1,13 @@
 # Palera1n-GUI Changelog
 
+## 1.0.6a
+- Small fix to macOS version where an extraneous terminal window would open. No change to Linux deb. (Use v1.0.6 deb)
+
+## 1.0.6
+- Moved to PyQt6 for macOS, (Debian based) Linux cross-compatibility.
+- Fixed macOS 'Quit' menu item bug.
+- Added .deb package for Linux AMD64.
+
 ## 1.0.5
 - Updated palera1n binary to v2.2.1
 - Switched to DMG distribution.
